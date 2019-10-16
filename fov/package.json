@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "cheap-ruler": "*",
+    "terrain-rgb-query": "*"
+  },
+  "devDependencies": {
+    "eslint": "^5.8.0",
+    "serve": "^10.0.2",
+    "watchify": "^3.11.1"
+  }
+}
