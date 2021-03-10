@@ -91,7 +91,7 @@
             map.getCanvas().style.cursor = "pointer";
             popup
               .setLngLat(e.features[0].geometry.coordinates)
-              .setHTML(`${e.features[0].properties.h} m`)
+              .setHTML(`${e.features[0].properties.h} ft`)
               .addTo(map);
             if (hoveredStateId) {
               map.setFeatureState(
@@ -131,7 +131,7 @@
           maxzoom: 16
         });
         // add the DEM source as a terrain layer with exaggerated height
-        map.setTerrain({ source: "dem", exaggeration: 1 });
+        map.setTerrain({ source: "dem", exaggeration: 0.5 });
 
         // add a sky layer that will show when the map is highly pitched
         map.addLayer({
