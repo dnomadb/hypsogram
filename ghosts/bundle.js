@@ -93,6 +93,7 @@ const A = new mapboxgl.Map({
   center: [-122.5071214,47.3514433],
   zoom: 9,
   hash: true,
+  customAttribution: '<a href="ye">hi!!!!</a>',
   transformRequest: (r, t) => {
     if (t === "Tile" && /dnomadb.vashon-dsm/.test(r)) {
       const ZXY = /v4\/dnomadb\.vashon-dsm\/(\d+\/\d+\/\d+)/.exec(r);
