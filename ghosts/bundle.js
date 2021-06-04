@@ -41,8 +41,13 @@ const styleA = {
         "sky-atmosphere-sun": [0, 0],
         "sky-atmosphere-sun-intensity": 0
       }
-    }
-  ]
+    },
+  ],
+  "fog": {
+    "range": [-0.5, 3],
+    "color": "black",
+    "horizon-blend": 0.5
+  }
 };
 const styleB = {
   version: 8,
@@ -83,7 +88,12 @@ const styleB = {
         "sky-atmosphere-sun-intensity": 0
       }
     }
-  ]
+  ],
+  "fog": {
+    "range": [-0.5, 3],
+    "color": "black",
+    "horizon-blend": 0.5
+  }
 };
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjaW16aXFsZzUwNHJmdjdra3h0Nmd2cjY1In0.SqzkaKalXxQaPhQLjodQcQ";
