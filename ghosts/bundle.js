@@ -46,7 +46,7 @@ const styleA = {
   "fog": {
     "range": [-0.5, 3],
     "color": "black",
-    "horizon-blend": 0.5
+    "horizon-blend": 0.2
   }
 };
 const styleB = {
@@ -92,7 +92,7 @@ const styleB = {
   "fog": {
     "range": [-0.5, 3],
     "color": "black",
-    "horizon-blend": 0.5
+    "horizon-blend": 0.2
   }
 };
 mapboxgl.accessToken =
