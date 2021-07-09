@@ -72,8 +72,8 @@
 				]
 			};
 
-			fetch(`https://api.mapbox.com/v4/${tilesetID}.json?access_token=${mapboxgl.accessToken}`).then((resp) => {return resp.json()}).then((tileJSON) => {
-					const [lng, lat, z] = tileJSON.center;
+
+				const [lat, lng, z] = [47.35212, -122.41058, 12]
 	      const tilesetRegex = new RegExp(`${tilesetID}/[0-9]+\/[0-9]+\/[0-9]+`);
 	      const map = new mapboxgl.Map({
 	        container: "map",
@@ -111,7 +111,6 @@
             }
           }, "water");
 	      });
-			});
     </script>
   </body>
 </html>
