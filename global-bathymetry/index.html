@@ -2,12 +2,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Salish Sea</title>
+    <title>GEBCO</title>
     <meta
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css" rel="stylesheet">
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js"></script>
     <style>
       body {
@@ -20,107 +23,24 @@
         bottom: 0;
         width: 100%;
       }
-      #info {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-      }
-      /* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
     </style>
   </head>
   <body>
     <div id="map"></div>
-    <div id="info"><label class="switch">
-  <input type="checkbox" name="toggler" >
-  <span class="slider round"></span>
-</label></div>
     <script>
-    const checkbox = document.querySelector("input[name=toggler]");
-
-
+      const query = new URLSearchParams(window.location.search);
+      const threed = query.get("3d") === "true";
       mapboxgl.accessToken =
         "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjaW16aXFsZzUwNHJmdjdra3h0Nmd2cjY1In0.SqzkaKalXxQaPhQLjodQcQ";
 
-      const tilesetID = "dnomadb.gebco";
-      const exaggeration = 200;
-
-      checkbox.addEventListener('change', function() {
-        if (this.checked) {
-          const mapStyle = map.getStyle();
-          delete mapStyle.projection;
-          map.setStyle(mapStyle)
-        } else {
-          const mapStyle = map.getStyle();
-          mapStyle.projection = {"name": "equalEarth"};
-          map.setStyle(mapStyle)
-          console.log("Checkbox is not checked..");
-        }
-      });
+      const tilesetID = "dnomadb.gebco-bathymetry";
 
       let style = {
         version: 8,
-        "projection": {"name": "equalEarth"},
+        projection: { name: "equalEarth" },
+        sprite:
+          "mapbox://sprites/dnomadb/ckvt62c6e1e1214o5y0qg6yez/ck2u8j60r58fu0sgyxrigm3cu",
+        glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
         sources: {
           hs: {
             type: "raster-dem",
@@ -130,7 +50,8 @@ input:checked + .slider:before {
             url: "mapbox://dnomadb.gebco-color",
             type: "raster",
             tileSize: 256
-          }
+          },
+          composite: { url: "mapbox://dnomadb.cfhwc1mj", type: "vector" }
         },
         layers: [
           {
@@ -155,14 +76,58 @@ input:checked + .slider:before {
             source: "hs",
             type: "hillshade",
             paint: {
-              "hillshade-exaggeration": 1
+              "hillshade-exaggeration": 0.5
+            }
+          },
+          {
+            id: "points-5vwcvi",
+            type: "symbol",
+            source: "composite",
+            "source-layer": "points-5vwcvi",
+            minzoom: 4,
+            layout: {
+              "text-field": [
+                "concat",
+                ["to-string", ["get", "name"]],
+                " ",
+                ["get", "type"]
+              ],
+              "text-size": ["interpolate", ["linear"], ["zoom"], 4, 10, 10, 16],
+              "text-max-width": 7,
+              "text-font": ["Rubik Italic", "Arial Unicode MS Regular"]
+            },
+            paint: {
+              "text-halo-color": "hsl(154, 69%, 40%)",
+              "text-halo-width": 1,
+              "text-halo-blur": 1,
+              "text-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                4,
+                0,
+                5.5,
+                1
+              ]
             }
           }
         ]
       };
-
+      if (threed) {
+        delete style.projection;
+      }
+      const transformCoords = url => {
+        const zxy = tileCoordRegex.exec(url);
+        let [z, x, y] = zxy.slice(1, 4).map(c => {
+          return parseInt(c);
+        });
+        const zd = 2 ** z;
+        x = (x + zd / 2) % zd;
+        return url.replace(zxy[0], `/${z}/${x}/${y}`);
+      };
       const [lat, lng, z] = [0, 0, 1];
       const tilesetRegex = new RegExp(`${tilesetID}/[0-9]+\/[0-9]+\/[0-9]+`);
+      const tileCoordRegex = new RegExp("/([0-9]+)\/([0-9]+)\/([0-9]+)");
       const map = new mapboxgl.Map({
         container: "map",
         zoom: z,
@@ -174,27 +139,33 @@ input:checked + .slider:before {
         customAttribution:
           "<a href='https://twitter.com/DnomadB' target='_blank'>@dnomadb</a>",
         transformRequest: (url, type) => {
-          if (
-            type === "Tile" &&
-            tilesetRegex.test(url) &&
-            !tilesetID.startsWith("mapbox")
-          ) {
-            return { url: url.replace("webp", "pngraw") };
+          if (type === "Tile") {
+            if (!threed) {
+              url = transformCoords(url);
+            }
+
+            if (tilesetRegex.test(url)) {
+              return { url: url.replace("webp", "pngraw") };
+            } else {
+              return { url: url };
+            }
           }
         }
       });
 
       map.on("load", function() {
-        map.addSource("mapbox-dem", {
-          type: "raster-dem",
-          url: `mapbox://${tilesetID}`,
-          tileSize: 512
-        });
-        // add the DEM source as a terrain layer with exaggerated height
-        map.setTerrain({
-          source: "mapbox-dem",
-          exaggeration: ["interpolate", ["linear"], ["zoom"], 2, 1000, 15, 10]
-        });
+        if (threed) {
+          map.addSource("mapbox-dem", {
+            type: "raster-dem",
+            url: `mapbox://${tilesetID}`,
+            tileSize: 512
+          });
+          // add the DEM source as a terrain layer with exaggerated height
+          map.setTerrain({
+            source: "mapbox-dem",
+            exaggeration: ["interpolate", ["linear"], ["zoom"], 2, 50, 15, 5]
+          });
+        }
 
         // add a sky layer that will show when the map is highly pitched
         map.addLayer({
@@ -206,22 +177,6 @@ input:checked + .slider:before {
             "sky-atmosphere-sun-intensity": 15
           }
         });
-
-        // map.on("mousemove", e => {
-        //   const ele =
-        //     Math.round(
-        //       map.queryTerrainElevation(e.lngLat, { exaggerated: false }) * 100
-        //     ) / 100;
-        //
-        //   const [R, G, B] = ocean[Math.round(((ele + 250) / 250) * 10) - 1];
-        //
-        //   document.getElementById("info").innerHTML = `${ele}m`;
-        //   document.getElementById(
-        //     "info"
-        //   ).style.backgroundColor = `rgb(${R}, ${G}, ${B})`;
-        //   // popup.setLngLat(e.lngLat).setHTML(ele);
-        //   // map.queryTerrainElevation()
-        // });
       });
     </script>
   </body>
