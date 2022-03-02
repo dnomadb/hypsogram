@@ -43,12 +43,29 @@
       .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
         border-left-color: rgba(0, 0, 0, 0.75);
       }
+      #menu {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.75);
+        padding: 5px;
+        font-family: "Open Sans", sans-serif;
+      }
     </style>
   </head>
   <body>
     <div id="map"></div>
-
+    <div id="menu">
+      <div>Elevation Source</div>
+      <div>
+        <input type="radio" id="DTM" name="rtoggle" value="DTM" checked="" />
+        <label for="DTM">DTM</label>
+      </div>
+      <div>
+        <input type="radio" id="DSM" name="rtoggle" value="DSM" />
+        <label for="DSM">DSM</label>
+      </div>
+    </div>
     <script>
+      let elevationTileset = "dnomadb.vashon-dtm";
       mapboxgl.accessToken =
         "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjaW16aXFsZzUwNHJmdjdra3h0Nmd2cjY1In0.SqzkaKalXxQaPhQLjodQcQ";
       var map = new mapboxgl.Map({
@@ -60,10 +77,13 @@
         hash: true,
         style: "mapbox://styles/dnomadb/ckm1g44ac2som17n17cgnor0i?fresh=true",
         transformRequest: (r, t) => {
-          if (t === "Tile" && /dnomadb.vashon-dtm/.test(r)) {
-            const ZXY = /v4\/dnomadb\.vashon-dtm\/(\d+\/\d+\/\d+)/.exec(r);
+          const tileMatch = new RegExp(
+            `${elevationTileset}/([0-9]+\/[0-9]+\/[0-9]+)`
+          );
+          if (t === "Tile" && tileMatch.test(r)) {
+            const ZXY = tileMatch.exec(r);
             return {
-              url: `https://api.mapbox.com/v4/dnomadb.vashon-dtm/${ZXY[1]}@2x.pngraw?access_token=${mapboxgl.accessToken}`
+              url: `https://api.mapbox.com/v4/${elevationTileset}/${ZXY[1]}@2x.pngraw?access_token=${mapboxgl.accessToken}`
             };
           }
         }
@@ -126,12 +146,12 @@
         });
         map.addSource("dem", {
           type: "raster-dem",
-          url: "mapbox://dnomadb.vashon-dtm",
+          url: `mapbox://${elevationTileset}`,
           tileSize: 512,
           maxzoom: 16
         });
-        // add the DEM source as a terrain layer with exaggerated height
-        map.setTerrain({ source: "dem", exaggeration: 0.5 });
+
+        map.setTerrain({ source: "dem", exaggeration: 0.3048 });
 
         // add a sky layer that will show when the map is highly pitched
         map.addLayer({
@@ -143,6 +163,29 @@
             "sky-atmosphere-sun-intensity": 15
           }
         });
+        const menu = document.getElementById("menu");
+        const inputs = menu.getElementsByTagName("input");
+
+        const switchElevationSource = option => {
+          const opt = `dnomadb.vashon-${option.target.id.toLowerCase()}`;
+          if (opt !== elevationTileset) {
+            elevationTileset = opt;
+            map.setTerrain(null);
+            map.removeSource("dem");
+            map.addSource("dem", {
+              type: "raster-dem",
+              url: `mapbox://${elevationTileset}`,
+              tileSize: 512,
+              maxzoom: 16
+            });
+
+            map.setTerrain({ source: "dem", exaggeration: 0.3048 });
+          }
+        };
+
+        for (let i = 0; i < inputs.length; i++) {
+          inputs[i].onclick = switchElevationSource;
+        }
       });
     </script>
   </body>
