@@ -7,11 +7,8 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <link
-      href="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css"
-      rel="stylesheet"
-    />
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
     <style>
       body {
         margin: 0;
@@ -37,7 +34,6 @@
 
       let style = {
         version: 8,
-        projection: { name: "equalEarth" },
         sprite:
           "mapbox://sprites/dnomadb/ckvt62c6e1e1214o5y0qg6yez/ck2u8j60r58fu0sgyxrigm3cu",
         glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
@@ -113,8 +109,9 @@
           }
         ]
       };
+      let projection = "equalEarth";
       if (threed) {
-        delete style.projection;
+        projection = 'globe'
       }
       const transformCoords = url => {
         const zxy = tileCoordRegex.exec(url);
@@ -136,6 +133,7 @@
         hash: true,
         bearing: 0,
         style: style,
+        projection: projection,
         customAttribution:
           "<a href='https://twitter.com/DnomadB' target='_blank'>@dnomadb</a>",
         transformRequest: (url, type) => {
@@ -163,7 +161,7 @@
           // add the DEM source as a terrain layer with exaggerated height
           map.setTerrain({
             source: "mapbox-dem",
-            exaggeration: ["interpolate", ["linear"], ["zoom"], 2, 50, 15, 5]
+            exaggeration: ["interpolate", ["linear"], ["zoom"], 2, 100, 15, 10]
           });
         }
 
