@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>GEBCO</title>
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjaW16aXFsZzUwNHJmdjdra3h0Nmd2cjY1In0.SqzkaKalXxQaPhQLjodQcQ";
+      const tilesetID = "dnomadb.global-pop";
+
+      const style = {
+        version: 8,
+        sprite:
+          "mapbox://sprites/dnomadb/ckvt62c6e1e1214o5y0qg6yez/ck2u8j60r58fu0sgyxrigm3cu",
+        glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+        "fog": {
+    "color": "hsl(209, 8%, 28%)",
+    "high-color": "hsl(0, 7%, 4%)"
+  },
+        sources: {
+          hs: {
+            type: "raster-dem",
+            url: `mapbox://${tilesetID}`
+          },
+          composite: {
+            "url":"mapbox://mapbox.mapbox-streets-v8","type":"vector"
+          }
+        },
+        layers: [
+          {
+            id: "background",
+            type: "background",
+            paint: {
+              "background-color": "white"
+            }
+          },
+          {"id":"water","type":"fill","paint":{"fill-color": "#eee"},"layout":{},"source":"composite","source-layer":"water"},
+          {
+            id: "hs",
+            source: "hs",
+            type: "hillshade",
+            paint: {
+              "hillshade-exaggeration": 0.5
+            }
+          },
+          
+        ]
+      };
+
+      
+      const tilesetRegex = new RegExp(`${tilesetID}/[0-9]+\/[0-9]+\/[0-9]+`);
+      
+      const map = new mapboxgl.Map({
+        container: "map",
+        zoom: 3,
+        center: [0, 0],
+        pitch: 20,
+        hash: true,
+        bearing: 0,
+        style: style,
+        projection: "globe",
+        customAttribution:
+          "<a href='https://twitter.com/DnomadB' target='_blank'>@dnomadb</a>",
+        transformRequest: (url, type) => {
+          if (type === "Tile") {
+            if (tilesetRegex.test(url)) {
+              return { url: url.replace("webp", "pngraw") };
+            } else {
+              return { url: url };
+            }
+          }
+        }
+      });
+
+      map.on("load", function() {
+        
+        map.addSource("mapbox-dem", {
+          type: "raster-dem",
+          url: `mapbox://${tilesetID}`,
+          tileSize: 512
+        });
+        // add the DEM source as a terrain layer with exaggerated height
+        map.setTerrain({
+          source: "mapbox-dem",
+          exaggeration: ["interpolate", ["linear"], ["zoom"], 0, 500, 15, 10]
+        });
+        
+
+        
+      });
+    </script>
+  </body>
+</html>
