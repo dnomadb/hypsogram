@@ -35,14 +35,16 @@ const beforeMap = new mapboxgl.Map({
   center: [145, -16],
   zoom: 0,
   hash: true,
-  tilt: false
+  tilt: false,
+  transformRequest: (r, t) => {
+    return {url: r.replace("\@2x", "")}
+  }
 });
 beforeMap.on("load", () => {
   const customlayer = new TextureLayer(
     "test",
     {
       type: "raster",
-    //   tiles: ["http://localhost:3000/tiles/rgb/{z}/{x}/{y}.png"]
       url: "mapbox://mapbox.mapbox-terrain-dem-v1",
     },
     setupLayer,
