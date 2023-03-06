@@ -1,0 +1,41 @@
+body {
+  margin:0;
+  padding:0;
+}
+#map {
+  margin: 0;
+  padding: 0;
+  width:100%;
+  height:100%;
+}
+.maphold {
+  width: 100%;
+}
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+.focus circle {
+  fill: steelblue;
+  stroke: white;
+}
+.elev-text {
+  fill: white;
+  box-shadow: 10px 10px 5px black;
+}
+.marker-vertex {
+    background: steelblue;
+    border-radius: 50%;
+    border: none
+}
+
+.marker-hover {
+    background: steelblue;
+    border-radius: 50%;
+    border:2px solid white;
+    height: 20px;
+}
+
+.chart-elevation-circle {
+    background: red;
+}
