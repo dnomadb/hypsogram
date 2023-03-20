@@ -7,11 +7,8 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js"></script>
-    <link
-      href="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css"
-      rel="stylesheet"
-    />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
     <style>
       body {
         margin: 0;
@@ -43,6 +40,7 @@
         pitch: 20,
 				hash: true,
         bearing: 0,
+        projection: "globe",
         style: "mapbox://styles/dnomadb/ckkgo3pi00jpy17qsnlaficfo",
         customAttribution: "<a href='https://astrogeology.usgs.gov/search/details/Mars/GlobalSurveyor/MOLA/Mars_MGS_MOLA_DEM_mosaic_global_463m/cub' target='_blank'>MOLA DEM</a>",
         transformRequest: (url, type) => {
@@ -59,7 +57,12 @@
           tileSize: 512
         });
         // add the DEM source as a terrain layer with exaggerated height
-        map.setTerrain({ source: "mapbox-dem", exaggeration: parseInt(exaggeration) });
+        map.setTerrain({ source: "mapbox-dem", exaggeration: [
+    "interpolate", 
+    ["linear"], ["zoom"], 
+      0, 50,
+      15, 5
+    ] });
       });
     </script>
   </body>

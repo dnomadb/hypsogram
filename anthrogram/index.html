@@ -43,6 +43,10 @@
             type: "raster-dem",
             url: `mapbox://${tilesetID}`
           },
+          color: {
+            type: "raster",
+            url: `mapbox://dnomadb.6h7udgkj`
+          },
           composite: {
             "url":"mapbox://mapbox.mapbox-streets-v8","type":"vector"
           }
@@ -55,13 +59,18 @@
               "background-color": "white"
             }
           },
-          {"id":"water","type":"fill","paint":{"fill-color": "#eee"},"layout":{},"source":"composite","source-layer":"water"},
+          {
+            id: "color",
+            type: "raster",
+            source: "color"
+          },
+          {"id":"water","type":"fill","paint":{"fill-color": "#222"},"layout":{},"source":"composite","source-layer":"water"},
           {
             id: "hs",
             source: "hs",
             type: "hillshade",
             paint: {
-              "hillshade-exaggeration": 0.5
+              "hillshade-exaggeration": 0.25
             }
           },
           
@@ -103,7 +112,7 @@
         // add the DEM source as a terrain layer with exaggerated height
         map.setTerrain({
           source: "mapbox-dem",
-          exaggeration: ["interpolate", ["linear"], ["zoom"], 0, 500, 15, 10]
+          exaggeration: ["interpolate", ["linear"], ["zoom"], 0, 200, 18, 10]
         });
         
 
