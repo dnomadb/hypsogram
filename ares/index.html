@@ -28,9 +28,9 @@
     <script>
       const tilesetID = "dnomadb.mola"
       mapboxgl.accessToken =
-        "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjaW16aXFsZzUwNHJmdjdra3h0Nmd2cjY1In0.SqzkaKalXxQaPhQLjodQcQ";
+        "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjbGdsOHRpYWcxbWxwM3NueWYwYWYwbms0In0.zb8hlW2-BNebPuQ2hhiAuw";
       const query = new URLSearchParams(window.location.search);
-			mapboxgl.accessToken = query.get("access_token") || "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjaW16aXFsZzUwNHJmdjdra3h0Nmd2cjY1In0.SqzkaKalXxQaPhQLjodQcQ";
+			mapboxgl.accessToken = query.get("access_token") || "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjbGdsOHRpYWcxbWxwM3NueWYwYWYwbms0In0.zb8hlW2-BNebPuQ2hhiAuw";
 			const exaggeration = query.get("exaggeration") || "10";
       const tilesetRegex = new RegExp(`${tilesetID}/[0-9]+\/[0-9]+\/[0-9]+`);
       const map = new mapboxgl.Map({

@@ -6208,7 +6208,7 @@ function config (name) {
 },{}],31:[function(require,module,exports){
 const cheapRuler = require("cheap-ruler")
 const terrainRGBquery = require("terrain-rgb-query");
-mapboxgl.accessToken = 'pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjaW16aXFsZzUwNHJmdjdra3h0Nmd2cjY1In0.SqzkaKalXxQaPhQLjodQcQ';
+mapboxgl.accessToken = 'pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjbGdsOHRpYWcxbWxwM3NueWYwYWYwbms0In0.zb8hlW2-BNebPuQ2hhiAuw';
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/empty-v9',
