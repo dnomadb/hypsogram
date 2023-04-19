@@ -1,5 +1,5 @@
 mapboxgl.accessToken =
-  "pk.eyJ1Ijoic3RhbWVuIiwiYSI6IlpkZEtuS1EifQ.jiH_c9ShtBwtqH9RdG40mw";
+  "pk.eyJ1IjoiZG5vbWFkYiIsImEiOiJjbGdsOHRpYWcxbWxwM3NueWYwYWYwbms0In0.zb8hlW2-BNebPuQ2hhiAuw";
 
 var vertexSource = `
     attribute vec2 aPos;
@@ -25,7 +25,8 @@ var fragmentSource = `
         vec4 color = texture2D(uTexture, vTexCoord);
         float i = -10000.0 + (color.r * 255.0 * 256.0 * 256.0 + color.g * 256.0 * 255.0 + color.b * 256.0) * 0.1;
         if (i <= u_slr) {
-          gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          float g = min(u_slr - i, 10.0) / 10.0;
+          gl_FragColor = vec4(1.0 - g, 1.0 - g, 1.0 - g, 1.0);
         }
         else {
           gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -34,7 +35,7 @@ var fragmentSource = `
      `;
 const map = new mapboxgl.Map({
   container: "map",
-  style: "mapbox://styles/mapbox/empty-v9",
+  style: "mapbox://styles/dnomadb/clgo676op003101pshbrq96fa",
   center: [145, -16],
   zoom: 0,
   hash: true,
@@ -54,7 +55,7 @@ const customlayer = new TextureLayer(
   render
 );
 map.on("load", () => {
-  map.addLayer(customlayer);
+  map.addLayer(customlayer, "water");
 });
 
 
