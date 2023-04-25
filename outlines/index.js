@@ -35,27 +35,27 @@ var fragmentSource = `
      `;
 const map = new mapboxgl.Map({
   container: "map",
-  style: "mapbox://styles/dnomadb/clgo676op003101pshbrq96fa",
+  style: "mapbox://styles/mapbox/empty-v9",
   center: [145, -16],
   zoom: 0,
   hash: true,
   tilt: false,
-  // transformRequest: (r, t) => {
-  //   return {url: r.replace("\@2x", "")}
-  // }
+  transformRequest: (r, t) => {
+    return {url: r.replace("webp", "pngraw")}
+  }
 });
 const customlayer = new TextureLayer(
   "test",
   {
     type: "raster",
-    url: "mapbox://mapbox.terrain-rgb",
+    url: "mapbox://dnomadb.etopo-2",
     tileSize: 256
   },
   setupLayer,
   render
 );
 map.on("load", () => {
-  map.addLayer(customlayer, "water");
+  map.addLayer(customlayer);
 });
 
 
